@@ -1,3 +1,4 @@
+import json
 import pandas as pd
 from nltk import sent_tokenize, word_tokenize, ngrams
 import nltk
@@ -7,9 +8,9 @@ from collections import defaultdict
 
 
 def main():
-    # comments = pd.read_csv('test_comments_brands.csv', names = ['polarity', 'id', 'date', 'query', 'user', 'tweet'])
-    # comment_list = [sent_tokenize(sent) for sent in comments['tweet'].tolist()]
-    comment_list = ['hey man how is life', 'hey man i feel good thanks what about you', 'i am doing okay', 'why just okay', 'ah you know feels man']
+    comments = pd.read_csv('test_comments_brands.csv', names = ['polarity', 'id', 'date', 'query', 'user', 'tweet']).head(300)
+    comment_list = [sent_tokenize(sent) for sent in comments['tweet'].tolist()]
+    # comment_list = ['hey man how is life', 'hey man i feel good thanks what about you']
     entropylist = defaultdict(list)
 
     removals = string.punctuation + '``'
@@ -22,8 +23,9 @@ def main():
             if counter == 0:
                 entropylist['[start]'].append([gram_clean.lower()])
                 recent_list.append([gram_clean.lower()])
+                counter += 1
             else:
-                entropylist[len(recent_list)-1].append(str(gram_clean.lower()))
+                entropylist[str(recent_list[len(recent_list)-1])].append(str(gram_clean.lower()))
                 recent_list.append([gram_clean.lower()])
             counter += 1
 
@@ -32,7 +34,9 @@ def main():
 
     # create the conditional probability list to calculate odds based on the word
     all_entropy = {}
+    print entropylist.values()
     for key in entropylist:
+        print str(key)
         count_vals = {}
         words_connect = len(entropylist[key])
         # print words_connect
@@ -48,10 +52,8 @@ def main():
             cond_prob_val[count_info] = float(count_vals[count_info]) / float(words_connect)
         all_entropy[key] = [cond_prob_val]
 
-    for x in all_entropy['[start]']:
-        for y in x:
-            print y, x[y]
-        print '\n'
-        print len(x)
+    # for x in all_entropy:
+    with open('data.json', 'w') as fp:
+        json.dump(all_entropy, fp)
 
 main()
