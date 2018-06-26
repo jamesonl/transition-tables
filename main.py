@@ -7,8 +7,9 @@ from collections import defaultdict
 
 
 def main():
-    comments = pd.read_csv('test_comments_brands.csv', names = ['polarity', 'id', 'date', 'query', 'user', 'tweet']).head(500)
-    comment_list = [sent_tokenize(sent) for sent in comments['tweet'].tolist()]
+    # comments = pd.read_csv('test_comments_brands.csv', names = ['polarity', 'id', 'date', 'query', 'user', 'tweet'])
+    # comment_list = [sent_tokenize(sent) for sent in comments['tweet'].tolist()]
+    comment_list = ['hey man how is life', 'hey man i feel good thanks what about you', 'i am doing okay', 'why just okay', 'ah you know feels man']
     entropylist = defaultdict(list)
 
     removals = string.punctuation + '``'
@@ -51,5 +52,6 @@ def main():
         for y in x:
             print y, x[y]
         print '\n'
+        print len(x)
 
 main()
